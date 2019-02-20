@@ -1,12 +1,16 @@
+import 'package:flutter_jsonschema/models/Properties.dart';
+
 class Schema {
   String title;
   String type;
+  String description;
   List<dynamic> required;
   List<Properties> properties;
 
   Schema({
     this.title,
     this.type,
+    this.description,
     this.required,
     this.properties,
   });
@@ -15,6 +19,7 @@ class Schema {
     Schema newSchema = Schema(
       title: json['title'],
       type: json['type'],
+      description: json['description'],
       required: json['required'],
     );
     newSchema.setProperties(json['properties'], newSchema.required);
@@ -31,6 +36,7 @@ class Schema {
       }
       props.add(
         Properties(
+          id: key,
           type: data['type'],
           title: data['title'],
           defaultValue: data['default'],
@@ -43,24 +49,3 @@ class Schema {
   }
 }
 
-class Properties {
-  String type;
-  String title;
-  dynamic defaultValue;
-  bool required;
-
-  Properties({
-    this.type,
-    this.title,
-    this.defaultValue,
-    this.required,
-  });
-
-  factory Properties.fromJson(Map<String, dynamic> json) {
-    return Properties(
-      type: json['type'],
-      title: json['title'],
-      defaultValue: json['default'],
-    );
-  }
-}

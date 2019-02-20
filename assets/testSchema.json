@@ -1,10 +1,13 @@
 {
-  "title": "Todo",
+  "title": "Todo JsonSchema",
+  "description" : "Description goes here",
   "type": "object",
   "required": ["title"],
   "properties": {
     "title": {"type": "string", "title": "Title", "default": "A new task"},
     "done": {"type": "boolean", "title": "Done ?", "default": true},
-    "sure": {"type": "boolean", "title": "Are you sure ?", "default": false}
+    "sure": {"type": "boolean", "title": "Are you sure ?", "default": false},
+    "title 2": {"type": "string", "title": "Title 2"},
+    "title 3": {"type": "string", "title": "Title 3"}
   }
 }

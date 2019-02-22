@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/services.dart';
 import 'package:flutter_jsonschema/models/Properties.dart';
 import 'dart:convert';
@@ -20,6 +19,10 @@ class JsonSchemaBloc {
 
   Stream<Schema> get jsonSchema => _jsonSchema;
 
+  Map<String, dynamic> _data = Map<String, dynamic>();
+  PublishSubject<String> _submitData = PublishSubject<String>();
+  Stream<String> get submitData => _submitData;
+
   JsonSchemaBloc() {
     _jsonSchema.stream.listen((schema) {
       initDataBinding(schema.properties);
@@ -29,7 +32,13 @@ class JsonSchemaBloc {
       data.forEach((key,value){
         if(_formData.containsKey(key)){
           _formData[key].add(value);
+          _data[key] = value;
         }
+
+        if(key=='submit'){
+          _submitData.add(getFormData());
+        }
+
       });
     });
   }
@@ -53,9 +62,11 @@ class JsonSchemaBloc {
       _formData[prop.id] = BehaviorSubject<dynamic>();
       formData[prop.id] = _formData[prop.id].stream;
       _formData[prop.id].add(prop.defaultValue);
-
-
     });
+  }
+
+  String getFormData(){
+    return json.encode(_data);
   }
 
   dispose() {

@@ -13,18 +13,14 @@ class JsonSchemaForm extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return _jsonSchemaForm(schema: schema, jsonSchemaBloc: jsonSchemaBloc);
+    return _jsonSchemaForm();
   }
 }
 
 typedef JsonSchemaFormSetter<T> = void Function(T newValue);
 
 class _jsonSchemaForm extends State<JsonSchemaForm> {
-  final Schema schema;
   final _formKey = GlobalKey<FormState>();
-  final JsonSchemaBloc jsonSchemaBloc;
-
-  _jsonSchemaForm({@required this.schema, this.jsonSchemaBloc});
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +39,7 @@ class _jsonSchemaForm extends State<JsonSchemaForm> {
                       children: <Widget>[
                         Container(
                           child: Text(
-                            schema.title != null ? schema.title : '',
+                            widget.schema.title != null ? widget.schema.title : '',
                             style: TextStyle(
                               fontSize: 25.0,
                             ),
@@ -54,8 +50,8 @@ class _jsonSchemaForm extends State<JsonSchemaForm> {
                         ),
                         Container(
                           child: Text(
-                            schema.description != null
-                                ? schema.description
+                            widget.schema.description != null
+                                ? widget.schema.description
                                 : '',
                             style: TextStyle(
                               fontSize: 15.0,
@@ -70,7 +66,7 @@ class _jsonSchemaForm extends State<JsonSchemaForm> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: schema.properties.map<Widget>((item) {
+                      children: widget.schema.properties.map<Widget>((item) {
                         return getWidget(item);
                       }).toList(),
                     ),
@@ -81,7 +77,7 @@ class _jsonSchemaForm extends State<JsonSchemaForm> {
                         _formKey.currentState.save();
                         Map<String, dynamic> data = Map<String, dynamic>();
                         data['submit'] = true;
-                        jsonSchemaBloc.jsonDataAdd.add(data);
+                        widget.jsonSchemaBloc.jsonDataAdd.add(data);
                       }
                     },
                     child: Text('Submit'),
@@ -91,7 +87,7 @@ class _jsonSchemaForm extends State<JsonSchemaForm> {
             ),
           ),
           StreamBuilder(
-              stream: jsonSchemaBloc.submitData,
+              stream: widget.jsonSchemaBloc.submitData,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return Text(snapshot.data);
@@ -122,7 +118,7 @@ class _jsonSchemaForm extends State<JsonSchemaForm> {
         onSaved: (value) {
           Map<String, dynamic> data = Map<String, dynamic>();
           data[properties.id] = value;
-          jsonSchemaBloc.jsonDataAdd.add(data);
+          widget.jsonSchemaBloc.jsonDataAdd.add(data);
         },
         validator: (String value) {
           if (properties.required) {
@@ -143,7 +139,7 @@ class _jsonSchemaForm extends State<JsonSchemaForm> {
 
   Widget getCheckBox(Properties properties) {
     return StreamBuilder(
-      stream: jsonSchemaBloc.formData[properties.id],
+      stream: widget.jsonSchemaBloc.formData[properties.id],
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return CheckboxFormField(
@@ -174,6 +170,6 @@ class _jsonSchemaForm extends State<JsonSchemaForm> {
   @override
   void dispose() {
     super.dispose();
-    jsonSchemaBloc.dispose();
+    widget.jsonSchemaBloc.dispose();
   }
 }
